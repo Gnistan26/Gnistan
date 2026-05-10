@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Gnistan">
+<title>Gnistan ✦</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:#FDF8F2;font-family:'Nunito',sans-serif;color:#1A1A2E;overscroll-behavior:none}
+::-webkit-scrollbar{width:0}
+input,textarea{font-family:'Nunito',sans-serif}
+input:focus,textarea:focus{outline:none}
+button{font-family:'Nunito',sans-serif;cursor:pointer;border:none;background:none}
+
+@keyframes gup{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes gdot{0%,80%,100%{transform:scale(0)}40%{transform:scale(1)}}
+@keyframes gpulse{0%,100%{opacity:1}50%{opacity:0.35}}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+.app{max-width:430px;margin:0 auto;min-height:100vh;padding-bottom:48px;background:#FDF8F2}
+
+.header{display:flex;justify-content:space-between;align-items:center;padding:18px 18px 12px;position:sticky;top:0;z-index:50;background:#FDF8F2}
+.logo{display:flex;align-items:center;gap:8px}
+.logo-text{font-size:28px;font-weight:900;color:#1A1A2E;letter-spacing:-0.5px}
+.logo-star{font-size:22px;color:#FF6B2B;animation:gpulse 2.5s ease-in-out infinite}
+.rt-btn{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:40px;border:2px solid #EF476F;background:#FFF0F4;color:#EF476F;font-weight:800;font-size:13px}
+.rt-badge{background:#EF476F;color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900}
+
+.filter-card{margin:0 14px;background:#fff;border-radius:26px;padding:18px 16px;box-shadow:0 4px 28px rgba(0,0,0,0.07);border:1px solid #EDE8E0}
+.label{font-size:11px;font-weight:800;color:#9096B0;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:8px}
+.pills{display:flex;gap:8px;margin-bottom:16px}
+.pill{flex:1;padding:10px 4px;border-radius:40px;border:2px solid #EDE8E0;background:transparent;color:#1A1A2E;font-weight:800;font-size:13px;transition:all .18s}
+.pill.active-orange{background:#FF6B2B;border-color:#FF6B2B;color:#fff}
+.pill.active-yellow{background:#FFD166;border-color:#FFD166;color:#1A1A2E}
+
+.areas{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:16px}
+.area-btn{padding:14px 4px;border-radius:18px;border:2px solid #EDE8E0;background:#FDF8F2;color:#1A1A2E;font-weight:800;font-size:12px;display:flex;flex-direction:column;align-items:center;gap:5px;transition:all .18s}
+.area-btn .emoji{font-size:24px}
+
+.theme-input{width:100%;padding:12px 14px;border-radius:16px;border:2px solid #EDE8E0;background:#FDF8F2;font-size:14px;color:#1A1A2E;margin-bottom:16px;transition:border-color .15s}
+
+.cta{width:100%;padding:16px;border-radius:20px;background:linear-gradient(135deg,#FF6B2B,#FF8C42);color:#fff;font-size:18px;font-weight:900;box-shadow:0 8px 24px rgba(255,107,43,0.4);transition:all .25s;display:flex;align-items:center;justify-content:center;gap:10px}
+.cta:disabled{background:#9096B0;box-shadow:none}
+.cta-star{font-size:22px}
+.error{color:#EF476F;font-weight:800;font-size:13px;text-align:center;margin-bottom:12px}
+
+.dots{display:flex;gap:7px;justify-content:center;padding:32px 0}
+.dot{width:12px;height:12px;border-radius:50%;background:#FF6B2B}
+
+.result{margin:14px 14px 0}
+.act-card{background:#fff;border-radius:24px;padding:20px 16px;box-shadow:0 8px 40px rgba(0,0,0,0.10);border:1px solid #EDE8E0;animation:gup .4s cubic-bezier(.22,1,.36,1)}
+.act-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.act-meta{font-size:11px;font-weight:800;color:#FF6B2B;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.ai-badge{font-size:10px;background:#F0FFF4;color:#06D6A0;border-radius:20px;padding:2px 8px;font-weight:800}
+.act-title{font-size:19px;font-weight:900;color:#1A1A2E;line-height:1.25}
+.save-btn{border:2px solid #EDE8E0;background:#FDF8F2;border-radius:40px;padding:8px 13px;font-size:18px;transition:all .2s;flex-shrink:0}
+.save-btn.saved{border-color:#FF6B2B;background:#FFF0E8}
+
+.tabs{display:flex;background:#FDF8F2;border-radius:14px;padding:4px;margin-bottom:14px;gap:3px}
+.tab{flex:1;padding:9px 2px;border-radius:12px;background:transparent;color:#9096B0;font-weight:800;font-size:11px;display:flex;align-items:center;justify-content:center;gap:3px;transition:all .15s}
+.tab.active{background:#FF6B2B;color:#fff}
+
+.tab-content{font-size:14px;line-height:1.78;color:#1A1A2E}
+.step{display:flex;gap:12px;margin-bottom:14px;border-radius:12px;padding:10px 12px 10px 0}
+.step:nth-child(odd){background:#FAFAF8}
+.step-num{min-width:28px;height:28px;border-radius:50%;background:#FF6B2B;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;flex-shrink:0;box-shadow:0 2px 8px rgba(255,107,43,0.3)}
+.step-text{padding-top:4px;font-size:13.5px}
+.magic-box{background:linear-gradient(135deg,#F0FDF9,#E8FFF8);border-radius:14px;padding:14px;margin-bottom:12px;border:1px solid #C3F0E4}
+.magic-label{font-weight:800;color:#06D6A0;font-size:13px;margin-bottom:8px}
+.magic-text{font-style:italic;line-height:1.7}
+.what-box{background:#FDF8F2;border-radius:14px;padding:14px;border:1px solid #EDE8E0}
+.what-label{font-weight:800;color:#1A1A2E;font-size:13px;margin-bottom:6px}
+.ref-before{background:linear-gradient(135deg,#FFF8F0,#FFF3E8);border-radius:14px;padding:14px;margin-bottom:12px;border:1px solid #FFD9C0}
+.ref-before-label{font-weight:800;color:#FF6B2B;font-size:13px;margin-bottom:8px}
+.ref-after{background:linear-gradient(135deg,#F5F0FF,#EDE8FF);border-radius:14px;padding:14px;margin-bottom:14px;border:1px solid #D4C5FF}
+.ref-after-label{font-weight:800;color:#9B5DE5;font-size:13px;margin-bottom:8px}
+.ref-text{font-style:italic;color:#555;line-height:1.75}
+.note-box{background:#FDF8F2;border-radius:16px;padding:14px;border:2px solid #EDE8E0;transition:border-color .3s}
+.note-box.saved{border-color:#06D6A0}
+.note-label{font-weight:800;color:#1A1A2E;font-size:13px;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.saved-tag{font-size:10px;background:#F0FFF4;color:#06D6A0;border-radius:20px;padding:2px 8px;font-weight:800}
+textarea{width:100%;min-height:90px;padding:10px 12px;border-radius:12px;border:1.5px solid #EDE8E0;background:#fff;font-size:13px;color:#1A1A2E;line-height:1.65;resize:vertical;transition:border-color .15s}
+.save-note-btn{margin-top:10px;width:100%;padding:11px;border-radius:12px;font-weight:800;font-size:14px;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:6px}
+.save-note-btn.active{background:linear-gradient(135deg,#9B5DE5,#7B4DD4);color:#fff}
+.save-note-btn.done{background:linear-gradient(135deg,#06D6A0,#05B88A);color:#fff}
+.save-note-btn.inactive{background:#EDE8E0;color:#9096B0}
+
+.lpfo-tags{margin-top:14px;display:flex;flex-wrap:wrap;gap:7px}
+.lpfo-tag{background:#EFF4FF;color:#4B72D9;border-radius:20px;padding:5px 12px;font-size:11px;font-weight:800;border:1px solid #D0DFFF;display:flex;align-items:center;gap:4px}
+
+.print-btns{display:flex;gap:8px;margin-top:14px}
+.print-btn{flex:1;padding:10px;border-radius:14px;border:2px solid #EDE8E0;background:#FDF8F2;color:#1A1A2E;font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center;gap:5px;transition:all .15s}
+
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:14px}
+.nav-btn{padding:9px 18px;border-radius:22px;border:2px solid #EDE8E0;background:transparent;font-weight:800;color:#1A1A2E;font-size:13px;transition:opacity .2s}
+.nav-btn:disabled{opacity:0.3}
+.dots-nav{display:flex;gap:5px;align-items:center}
+.dot-nav{height:6px;border-radius:3px;background:#EDE8E0;transition:all .2s}
+
+.feedback{display:flex;gap:8px;justify-content:center;margin-top:14px;padding-top:14px;border-top:1px solid #EDE8E0}
+.fb-btn{padding:8px 16px;border-radius:40px;border:2px solid #EDE8E0;background:#FDF8F2;font-weight:700;font-size:13px;color:#1A1A2E;transition:all .15s}
+.fb-btn.active{background:#FFF0E8;border-color:#FF6B2B;transform:scale(1.08)}
+
+.build-btn{width:100%;margin-top:12px;padding:15px;border-radius:20px;background:linear-gradient(135deg,#4ECDC4,#2EC4B6);color:#fff;font-size:15px;font-weight:900;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 6px 22px rgba(78,205,196,0.35)}
+
+.overlay{position:fixed;inset:0;z-index:200;background:rgba(26,26,46,0.6);backdrop-filter:blur(6px);display:flex;align-items:flex-end}
+.drawer{background:#fff;border-radius:28px 28px 0 0;padding:24px 20px 40px;width:100%;max-height:82vh;overflow-y:auto}
+.drawer-handle{width:36px;height:4px;border-radius:2px;background:#EDE8E0;margin:0 auto 20px}
+.drawer-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.drawer-title{font-size:21px;font-weight:900;color:#1A1A2E}
+.drawer-actions{display:flex;gap:8px;align-items:center}
+.print-all-btn{padding:7px 12px;border-radius:12px;border:2px solid #FF6B2B;background:#FFF0E8;color:#FF6B2B;font-weight:800;font-size:12px;display:flex;align-items:center;gap:4px}
+.close-btn{background:#FDF8F2;border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#9096B0}
+.rt-empty{text-align:center;padding:36px 0;color:#9096B0}
+.rt-emoji{font-size:42px;margin-bottom:10px}
+.rt-item{background:#FDF8F2;border-radius:18px;padding:14px 16px;margin-bottom:12px;border:1px solid #EDE8E0}
+.rt-item-header{display:flex;justify-content:space-between;align-items:flex-start}
+.rt-item-title{font-weight:800;color:#1A1A2E;font-size:14px;margin-bottom:4px}
+.rt-item-meta{font-size:12px;color:#9096B0}
+.rt-note{background:linear-gradient(135deg,#F5F0FF,#EDE8FF);border-radius:12px;padding:10px 12px;border-left:3px solid #9B5DE5;margin-top:10px}
+.rt-note-label{font-size:11px;font-weight:800;color:#9B5DE5;margin-bottom:4px}
+.rt-note-text{font-size:13px;color:#444;line-height:1.6;font-style:italic}
+.del-btn{background:none;font-size:18px;color:#9096B0;flex-shrink:0}
+
+.modal-overlay{position:fixed;inset:0;z-index:300;background:rgba(26,26,46,0.65);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:24px}
+.modal{background:#fff;border-radius:24px;padding:28px 22px;max-width:380px;width:100%;animation:gup .3s cubic-bezier(.22,1,.36,1);box-shadow:0 20px 60px rgba(0,0,0,0.2)}
+.modal-header{display:flex;justify-content:space-between;margin-bottom:14px}
+.modal-badge{font-size:11px;font-weight:800;color:#4B72D9;letter-spacing:1px;text-transform:uppercase}
+.modal-close{background:#FDF8F2;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:14px;color:#9096B0}
+.modal-title{font-size:17px;font-weight:900;color:#1A1A2E;line-height:1.3;margin-bottom:14px}
+.modal-text{font-size:14px;line-height:1.75;color:#444}
+.modal-close-btn{margin-top:20px;width:100%;padding:12px;border-radius:14px;background:linear-gradient(135deg,#4ECDC4,#2EC4B6);color:#fff;font-weight:800;font-size:14px}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="header">
+    <div class="logo">
+      <span class="logo-text">Gnistan</span>
+      <span class="logo-star">✦</span>
+    </div>
+    <button class="rt-btn" onclick="openRT()">
+      🧵 Röd tråd
+      <span class="rt-badge" id="rt-badge" style="display:none">0</span>
+    </button>
+  </div>
+
+  <div class="filter-card">
+    <div class="label">👶 Ålder</div>
+    <div class="pills" id="age-pills"></div>
+    <div class="label">⏱ Tid</div>
+    <div class="pills" id="time-pills"></div>
+    <div class="label">📚 Område</div>
+    <div class="areas" id="areas"></div>
+    <div class="label">🎨 Tema (valfritt)</div>
+    <input class="theme-input" id="theme" placeholder="t.ex. Rymden, Djungelns djur, Vatten..."
+      onfocus="this.style.borderColor='#FF6B2B'" onblur="this.style.borderColor='#EDE8E0'">
+    <div class="error" id="error" style="display:none"></div>
+    <button class="cta" id="cta" onclick="generate()">
+      <span class="cta-star">✦</span> Ge mig en idé
+    </button>
+  </div>
+
+  <div class="result" id="result"></div>
+</div>
+
+<div class="overlay" id="rt-overlay" style="display:none" onclick="closeRT()">
+  <div class="drawer" onclick="event.stopPropagation()">
+    <div class="drawer-handle"></div>
+    <div class="drawer-header">
+      <div class="drawer-title">🧵 Röd tråd</div>
+      <div class="drawer-actions">
+        <button class="print-all-btn" id="print-all-btn" onclick="printAll()" style="display:none">🖨️ Skriv ut alla</button>
+        <button class="close-btn" onclick="closeRT()">✕</button>
+      </div>
+    </div>
+    <div id="rt-content"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="lpfo-modal" style="display:none" onclick="closeModal()">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <span class="modal-badge">📚 Lpfö 18</span>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-title" id="modal-title"></div>
+    <div class="modal-text" id="modal-text"></div>
+    <button class="modal-close-btn" onclick="closeModal()">Stäng</button>
+  </div>
+</div>
+
+<script>
+const C = {
+  orange:"#FF6B2B",yellow:"#FFD166",teal:"#4ECDC4",purple:"#9B5DE5",
+  green:"#06D6A0",pink:"#EF476F",dark:"#1A1A2E",muted:"#9096B0",border:"#EDE8E0",bg:"#FDF8F2"
+};
+
+const LPFO = {
+  "Lpfö 18: Språk och kommunikation":"Förskolan ska ge varje barn förutsättningar att utveckla ett nyanserat talspråk samt förmåga att lyssna, berätta, reflektera och ge uttryck för sina uppfattningar.",
+  "Lpfö 18: Matematik":"Förskolan ska ge varje barn förutsättningar att utveckla förståelse för rum, form, läge och riktning samt grundläggande egenskaper hos mängder, antal, ordning och talbegrepp.",
+  "Lpfö 18: Naturvetenskap och teknik":"Förskolan ska ge varje barn förutsättningar att utveckla förmåga att utforska, beskriva med olika uttrycksformer, ställa frågor om och samtala om naturvetenskap och teknik.",
+  "Lpfö 18: Rörelse och hälsa":"Förskolan ska ge varje barn förutsättningar att utveckla motorik, koordinationsförmåga och kroppsuppfattning samt förståelse för hur viktig rörelse är för välbefinnande.",
+  "Lpfö 18: Skapande":"Förskolan ska ge varje barn förutsättningar att utveckla förmåga att skapa samt använda olika uttrycksformer som bild, form, drama, rörelse, sång, musik och dans.",
+  "Lpfö 18: Socialt samspel":"Förskolan ska ge varje barn förutsättningar att utveckla sin förmåga att fungera enskilt och i grupp, samarbeta, hantera konflikter och förstå rättigheter och skyldigheter.",
+  "Lpfö 18: Normer och värden":"Förskolan ska aktivt och medvetet påverka och stimulera barnen att utveckla förståelse för de gemensamma demokratiska värderingar som det svenska samhället vilar på.",
+  "Lpfö 18: Lek":"Leken är central för barns utveckling och lärande. Förskolan ska ta tillvara barnens nyfikenhet och lust att leka och lära."
+};
+
+const AREAS = [
+  {id:"språk",label:"Språk",emoji:"💬",color:C.teal},
+  {id:"matematik",label:"Matematik",emoji:"🔢",color:C.orange},
+  {id:"rörelse",label:"Rörelse",emoji:"🤸",color:C.pink},
+  {id:"skapande",label:"Skapande",emoji:"🎨",color:C.purple},
+  {id:"natur",label:"Natur & teknik",emoji:"🌿",color:C.green},
+  {id:"samspel",label:"Socialt samspel",emoji:"🤝",color:C.yellow},
+];
+const AGES=["1–3 år","3–5 år","5–6 år"];
+const TIMES=["15 min","30 min","Heldag"];
+
+let state = {
+  age:"3–5 år", time:"30 min", area:null,
+  activities:[], idx:0, loading:false,
+  saved:[], notes:[], feedback:null, isAI:false,
+  redThread: JSON.parse(localStorage.getItem("gnistan-rt")||"[]")
+};
+
+function saveRT(){ localStorage.setItem("gnistan-rt", JSON.stringify(state.redThread)); }
+
+function makeMock(){
+  return [
+    {title:"Trollkonstnärernas färgmagi",magicIntro:"Idag har vi fått ett hemligt brev från färgtrollkarlen Spektrum! Han har tappat bort sina hemliga recept för att blanda magiska färger och behöver er hjälp allra mest. Är ni redo att bli trollkonstnärer?",childDescription:"Barnen blir färgtrollkonstnärer och blandar primärfärger för att skapa nya magiska färger. De experimenterar fritt och dokumenterar sina upptäckter i ett trollkonstnärsbrev.",pedagogSteps:["Förberedelse: Ställ fram tre genomskinliga burkar med röd, gul och blå vattenfärg. Lägg fram tomma burkar, pipetter, vita papper och pennor.","Introduktion (5 min): Läs ett hemligt brev högt med mystisk röst. Fråga: 'Vad tror ni händer om vi blandar röd och gul?' Låt barnen gissa fritt.","Utforskande (15 min): Låt barnen i par experimentera med pipetterna. Uppmuntra dem att sätta ord på vad de ser. Var nyfiken tillsammans.","Dokumentation (5 min): Barnen gör ett avtryck med sin nyblandade färg och skriver sitt hemliga recept.","Avslutning: Samla barnens recept till en gemensam trollkonstbok. Fråga: 'Vilken färg var svårast att blanda?'"],reflectionBefore:"Vilka föreställningar tror du att barnen har om färger sedan tidigare? Hur möter du deras nyfikenhet utan att ge svaren direkt?",reflectionAfter:"Vilka barn formulerade egna hypoteser? Vem valde att följa istället för att leda? Vad säger det om barngruppens dynamik?",lpfo:["Lpfö 18: Naturvetenskap och teknik","Lpfö 18: Skapande","Lpfö 18: Lek"]},
+    {title:"Bokstavsjakten i vår miljö",magicIntro:"Hej äventyrare! Alfabetets bokstäver har blivit osams och spridit ut sig överallt. De gömmer sig på hemliga ställen och väntar på att ni ska hitta dem!",childDescription:"Barnen letar efter laminerade bokstavskort gömda i utomhusmiljön och matchar dem med naturföremål som börjar på samma ljud.",pedagogSteps:["Förberedelse (kvällen innan): Laminera 10–15 bokstavskort. Göm dem på tydliga men inte alltför uppenbara ställen.","Introduktion: Visa ett SOS-meddelande från bokstäverna. Ge varje par en korg och enkla ledtrådar.","Jakten (15–20 min): Barnen söker i par. Uppmuntra dem att läsa korten högt och leta naturföremål.","Samling: Alla presenterar sin bokstav och sitt föremål. Skapa ett levande alfabet på ett gemensamt tyg.","Avslutning: Ta ett foto av det gemensamma alfabetet. Diskutera: 'Vilken bokstav var svårast?'"],reflectionBefore:"Hur anpassar du aktiviteten för barn på olika nivåer — de som kan läsa och de som inte kan?",reflectionAfter:"Hur samarbetade paren? Uppstod det naturliga situationer där barn lärde barn?",lpfo:["Lpfö 18: Språk och kommunikation","Lpfö 18: Lek","Lpfö 18: Socialt samspel"]},
+    {title:"Rörelsernas berättelse",magicIntro:"Kroppen kan berätta sagor utan ett enda ord! Idag är vi alla sagofigurer i världens tystaste och vackraste berättelse.",childDescription:"Till olika typer av musik gestaltar barnen karaktärer och naturkrafter med hela kroppen och skapar egna rörelsesagor.",pedagogSteps:["Uppvärmning (5 min): Barnen går runt. Säg: 'Ni är droppar i ett hav... nu blåser en storm... nu är det stilla igen.'","Musikgestaltning (10 min): Spela tre musikstycken med olika karaktär. Låt barnen röra sig fritt.","Skapande i grupper (10 min): Grupper om 3 får ett kort med en scen och skapar sin rörelsesaga.","Föreställning: Varje grupp visar sin saga. De andra gissar vad de gestaltar.","Dokumentation: Fota enstaka rörelser och låt barnen berätta vad de föreställde."],reflectionBefore:"Hur skapar du en trygg miljö där alla barn vågar använda kroppen uttrycksfullt?",reflectionAfter:"Vilka barn överraskade dig med sin kreativitet? Hur kan du använda dessa styrkor framöver?",lpfo:["Lpfö 18: Rörelse och hälsa","Lpfö 18: Skapande","Lpfö 18: Socialt samspel"]},
+    {title:"Ingenjörernas tornbygge",magicIntro:"Inkallelse till alla ingenjörer! Staden Byggeborg behöver ett nytt torn — det högsta och starkaste som någonsin byggts av naturens egna material!",childDescription:"Med pinnar, kottar och lera designar och bygger barnen torn och testar stabilitet och höjd.",pedagogSteps:["Materialinsamling (10 min): Gå ut och samla material. Prata om materialen: 'Vilka är starkast?'","Ritbordet (5 min): Varje barn ritar sin torndesign INNAN de börjar bygga.","Byggfas (15 min): Barnen bygger. Pedagogen frågar: 'Vad händer om du lägger den tyngre stenen längst ner?'","Testtid: Testa med en gemensam storm och mät höjden. Dokumentera med foto.","Ingenjörsmöte: 'Vad lärde ni er? Vad skulle ni göra annorlunda?' Bygg ett gemensamt supertorn."],reflectionBefore:"Hur balanserar du fri utforskning med viss struktur?",reflectionAfter:"Hur hanterade barnen när tornet föll — frustration eller nyfikenhet?",lpfo:["Lpfö 18: Matematik","Lpfö 18: Naturvetenskap och teknik"]},
+    {title:"Känslornas karta",magicIntro:"Välkommen till Känslolandet — ett magiskt land där Glädjeberget, Ledsnasjön och Trygghetskojan alla bor. Idag är vi kartografer!",childDescription:"Barngruppen skapar en stor gemensam karta över Känslolandet där varje barn bidrar med ett område baserat på egna känslor.",pedagogSteps:["Introduktion (10 min): Lägg ett stort vitt papper på golvet. Visa exempelplatser och fråga barnen.","Barnens bidrag (15 min): Varje barn väljer en känsla och skapar sitt land — rita, måla eller klistra.","Presentationsrunda: Varje barn berättar om sitt land. Skriv barnens egna ord på kartan.","Sammansättning: Sätt ihop alla bidrag med vägar och broar mellan länderna.","Placering: Sätt upp kartan i barnens ögonhöjd och återbesök den regelbundet."],reflectionBefore:"Finns det barn som sällan sätter ord på känslor? Hur skapar du utrymme för dem?",reflectionAfter:"Vilka känslor valde barnen? Vilka saknades? Vad berättar det om klimatet i din verksamhet?",lpfo:["Lpfö 18: Socialt samspel","Lpfö 18: Normer och värden","Lpfö 18: Skapande"]},
+    {title:"Vattencyklens dans",magicIntro:"Möt Droppy — en liten vattendroppe med en stor dröm. Han vill resa hela världen runt: från havet, upp till molnen och ner som regn igen!",childDescription:"Barnen agerar ut vattencykelns steg med kroppen, gör ett experiment med ånga och ritar sin version av Droppys äventyr.",pedagogSteps:["Berättelsen (5 min): Berätta om Droppy med en liten blå tygboll. Barnen rör sig med berättelsen.","Rörelsegestaltning (10 min): Gå igenom cykeln: avdunstning, moln, regn, flod. Repetera med musik.","Experiment (10 min): Värm vatten i termos och håll en kall tallrik ovanför. Se ångan bildas!","Droppys dagbok: Varje barn ritar sin version i tre rutor. Pedagogen skriver barnets mening.","Avslutning: Bind ihop alla sidor till en gemensam äventyrsbok."],reflectionBefore:"Hur kopplar du abstrakta naturvetenskapliga begrepp till barnens konkreta vardag?",reflectionAfter:"Vilka frågor ställde barnen som överraskade dig?",lpfo:["Lpfö 18: Naturvetenskap och teknik","Lpfö 18: Rörelse och hälsa","Lpfö 18: Språk och kommunikation"]},
+  ];
+}
+
+function init(){
+  const agePills = document.getElementById("age-pills");
+  AGES.forEach(a=>{
+    const b=document.createElement("button");
+    b.className="pill"+(a===state.age?" active-orange":"");
+    b.textContent=a;
+    b.onclick=()=>{state.age=a;document.querySelectorAll("#age-pills .pill").forEach(p=>p.className="pill");b.className="pill active-orange";};
+    agePills.appendChild(b);
+  });
+  const timePills = document.getElementById("time-pills");
+  TIMES.forEach(t=>{
+    const b=document.createElement("button");
+    b.className="pill"+(t===state.time?" active-yellow":"");
+    b.textContent=t;
+    b.onclick=()=>{state.time=t;document.querySelectorAll("#time-pills .pill").forEach(p=>p.className="pill");b.className="pill active-yellow";};
+    timePills.appendChild(b);
+  });
+  const areasEl = document.getElementById("areas");
+  AREAS.forEach(a=>{
+    const b=document.createElement("button");
+    b.className="area-btn";
+    b.id="area-"+a.id;
+    b.innerHTML=`<span class="emoji">${a.emoji}</span>${a.label}`;
+    b.onclick=()=>{
+      state.area=a.id;
+      document.querySelectorAll(".area-btn").forEach(el=>{el.style.background=C.bg;el.style.borderColor=C.border;el.style.color=C.dark;el.style.boxShadow="none";});
+      b.style.background=a.color;b.style.borderColor=a.color;b.style.color="#fff";b.style.boxShadow=`0 4px 14px ${a.color}44`;
+    };
+    areasEl.appendChild(b);
+  });
+  updateRTBadge();
+}
+
+function updateRTBadge(){
+  const badge=document.getElementById("rt-badge");
+  if(state.redThread.length>0){badge.style.display="flex";badge.textContent=state.redThread.length;}
+  else{badge.style.display="none";}
+}
+
+async function callClaude(prompt){
+  const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:4000,messages:[{role:"user",content:prompt}]})});
+  if(!res.ok) throw new Error(res.status);
+  const data=await res.json();
+  const text=data.content?.map(c=>c.text||"").join("")||"";
+  const m=text.match(/\{[\s\S]*\}/);
+  if(!m) throw new Error("no json");
+  return JSON.parse(m[0]);
+}
+
+async function generate(){
+  if(!state.area){showError("Välj ett område! 👆");return;}
+  hideError();setLoading(true);
+  state.activities=[];state.idx=0;state.saved=[];state.notes=[];state.feedback=null;state.isAI=false;
+  const areaObj=AREAS.find(a=>a.id===state.area);
+  const theme=document.getElementById("theme").value;
+  try{
+    const parsed=await callClaude(`Du är en erfaren förskollärare. Skapa 6 unika detaljerade aktiviteter kopplade till Lpfö 18 för: Ålder: ${state.age}, Tid: ${state.time}, Område: ${areaObj.label}${theme?`, Tema: ${theme}`:""}.
+Returnera ENBART JSON utan kodblock: {"activities":[{"title":"Kreativt namn","magicIntro":"Magisk intro 2-3 meningar","childDescription":"Levande beskrivning 2-3 meningar","pedagogSteps":["Steg 1 med tid och konkreta detaljer","Steg 2 med frågor att ställa","Steg 3","Steg 4 avslutning"],"reflectionBefore":"Metakognitiv fråga till PEDAGOGEN max 2 meningar","reflectionAfter":"Metakognitiv fråga till PEDAGOGEN max 2 meningar","lpfo":["Lpfö 18: mål1","Lpfö 18: mål2"]}]}`);
+    state.activities=parsed.activities||[];
+    state.saved=Array(state.activities.length).fill(false);
+    state.notes=Array(state.activities.length).fill("");
+    state.isAI=true;
+  } catch {
+    state.activities=makeMock();
+    state.saved=Array(state.activities.length).fill(false);
+    state.notes=Array(state.activities.length).fill("");
+  }
+  setLoading(false);
+  renderCard();
+  setTimeout(()=>document.getElementById("result").scrollIntoView({behavior:"smooth",block:"start"}),150);
+}
+
+async function buildOn(){
+  const cur=state.activities[state.idx];if(!cur)return;
+  const areaObj=AREAS.find(a=>a.id===state.area);
+  setLoading(true);
+  try{
+    const parsed=await callClaude(`Bygg vidare på "${cur.title}" med 6 nya varianter. Ålder: ${state.age}, Tid: ${state.time}, Område: ${areaObj?.label}.
+Returnera ENBART JSON: {"activities":[{"title":"Namn","magicIntro":"Intro","childDescription":"Beskrivning","pedagogSteps":["Steg 1","Steg 2","Steg 3","Steg 4"],"reflectionBefore":"Fråga till pedagogen max 2 meningar","reflectionAfter":"Fråga till pedagogen max 2 meningar","lpfo":["Lpfö 18: mål"]}]}`);
+    state.activities=parsed.activities||[];state.isAI=true;
+  } catch {
+    state.activities=makeMock().reverse();
+  }
+  state.idx=0;state.saved=Array(state.activities.length).fill(false);state.notes=Array(state.activities.length).fill("");state.feedback=null;
+  setLoading(false);renderCard();
+}
+
+function setLoading(val){
+  state.loading=val;
+  const cta=document.getElementById("cta");
+  if(val){
+    cta.disabled=true;
+    cta.innerHTML='<span style="animation:gpulse 1s infinite">✦</span> Tänker...';
+    document.getElementById("result").innerHTML='<div class="dots"><div class="dot" style="animation:gdot 1.3s ease-in-out 0s infinite"></div><div class="dot" style="animation:gdot 1.3s ease-in-out 0.2s infinite"></div><div class="dot" style="animation:gdot 1.3s ease-in-out 0.4s infinite"></div></div>';
+  } else {
+    cta.disabled=false;
+    cta.innerHTML='<span class="cta-star">✦</span> Ge mig en idé';
+  }
+}
+
+function showError(msg){const e=document.getElementById("error");e.textContent=msg;e.style.display="block";}
+function hideError(){document.getElementById("error").style.display="none";}
+
+function renderCard(){
+  const result=document.getElementById("result");
+  const acts=state.activities;
+  if(!acts.length){result.innerHTML="";return;}
+  const act=acts[state.idx];
+  const areaObj=AREAS.find(a=>a.id===state.area);
+  const saved=state.saved[state.idx];
+
+  result.innerHTML=`
+    <div class="act-card">
+      <div class="act-header">
+        <div style="flex:1;padding-right:10px">
+          <div class="act-meta">
+            ✦ Aktivitet ${state.idx+1} av ${acts.length}
+            ${state.isAI?'<span class="ai-badge">AI ✨</span>':''}
+          </div>
+          <div class="act-title">${act.title}</div>
+        </div>
+        <button class="save-btn ${saved?'saved':''}" onclick="toggleSave(${state.idx})" id="save-btn">
+          ${saved?'❤️':'🤍'}
+        </button>
+      </div>
+      <div class="tabs">
+        <button class="tab active" id="tab-pedagog" onclick="switchTab('pedagog')">👩‍🏫 Pedagog</button>
+        <button class="tab" id="tab-barn" onclick="switchTab('barn')">🧒 Barnen</button>
+        <button class="tab" id="tab-reflektion" onclick="switchTab('reflektion')">💭 Reflektion</button>
+      </div>
+      <div class="tab-content" id="tab-content"></div>
+      <div class="lpfo-tags">
+        ${act.lpfo?.map(l=>`<button class="lpfo-tag" onclick="openLpfo('${l}')">📚 ${l.replace('Lpfö 18: ','')} <span style="font-size:10px;opacity:0.6">ⓘ</span></button>`).join('')||''}
+      </div>
+      <div class="print-btns">
+        <button class="print-btn" onclick="printPlanning()">🖨️ Planering</button>
+        <button class="print-btn" onclick="printLetter()">✉️ Magiskt brev</button>
+      </div>
+      ${acts.length>1?`
+      <div class="nav">
+        <button class="nav-btn" onclick="prevAct()" ${state.idx===0?'disabled':''}>← Förra</button>
+        <div class="dots-nav">
+          ${acts.map((_,i)=>`<div class="dot-nav" style="width:${i===state.idx?18:6}px;background:${i===state.idx?C.orange:C.border}"></div>`).join('')}
+        </div>
+        <button class="nav-btn" onclick="nextAct()" ${state.idx===acts.length-1?'disabled':''}>Nästa →</button>
+      </div>`:''}
+      <div class="feedback">
+        ${[{e:'🔥',l:'Grym!',v:'fire'},{e:'😐',l:'Okej',v:'ok'},{e:'❌',l:'Inte nu',v:'no'}].map(o=>`
+          <button class="fb-btn ${state.feedback===o.v?'active':''}" onclick="setFeedback('${o.v}')">${o.e} ${o.l}</button>
+        `).join('')}
+      </div>
+    </div>
+    <button class="build-btn" onclick="buildOn()">🔗 Bygg vidare på detta</button>
+  `;
+  switchTab('pedagog');
+}
+
+let currentTab = 'pedagog';
+function switchTab(tab){
+  currentTab=tab;
+  ['pedagog','barn','reflektion'].forEach(t=>{
+    document.getElementById('tab-'+t)?.classList.toggle('active',t===tab);
+  });
+  const act=state.activities[state.idx];
+  const note=state.notes[state.idx]||"";
+  const content=document.getElementById('tab-content');
+  if(!content)return;
+
+  if(tab==='pedagog'){
+    content.innerHTML=act.pedagogSteps?.map((s,i)=>`
+      <div class="step">
+        <div class="step-num">${i+1}</div>
+        <div class="step-text">${s}</div>
+      </div>`).join('')||'';
+  } else if(tab==='barn'){
+    content.innerHTML=`
+      <div class="magic-box">
+        <div class="magic-label">✨ Magisk ingång</div>
+        <div class="magic-text">${act.magicIntro}</div>
+      </div>
+      <div class="what-box">
+        <div class="what-label">🎯 Vad händer</div>
+        <div>${act.childDescription}</div>
+      </div>`;
+  } else {
+    const savedNote=state.redThread.find(x=>x.title===act.title)?.note||"";
+    content.innerHTML=`
+      <div class="ref-before">
+        <div class="ref-before-label">🌱 Innan aktiviteten</div>
+        <div class="ref-text">${act.reflectionBefore}</div>
+      </div>
+      <div class="ref-after">
+        <div class="ref-after-label">🌟 Efter aktiviteten</div>
+        <div class="ref-text">${act.reflectionAfter}</div>
+      </div>
+      <div class="note-box ${savedNote?'saved':''}" id="note-box">
+        <div class="note-label">
+          ✏️ Mina reflektioner
+          ${savedNote?'<span class="saved-tag">Sparat ✓</span>':''}
+        </div>
+        <textarea id="note-input" placeholder="Skriv dina tankar här..." oninput="updateNoteBtn()">${note}</textarea>
+        <button class="save-note-btn ${note.trim()?'active':'inactive'}" id="save-note-btn" onclick="saveNote()">
+          🧵 Spara i röda tråden
+        </button>
+      </div>`;
+  }
+}
+
+function updateNoteBtn(){
+  const note=document.getElementById('note-input')?.value||'';
+  const btn=document.getElementById('save-note-btn');
+  if(btn) btn.className='save-note-btn '+(note.trim()?'active':'inactive');
+}
+
+function saveNote(){
+  const note=document.getElementById('note-input')?.value||'';
+  if(!note.trim())return;
+  state.notes[state.idx]=note;
+  const act=state.activities[state.idx];
+  const areaObj=AREAS.find(a=>a.id===state.area);
+  const exists=state.redThread.find(x=>x.title===act.title);
+  if(exists){state.redThread=state.redThread.map(x=>x.title===act.title?{...x,note}:x);}
+  else{state.saved[state.idx]=true;state.redThread.push({...act,area:areaObj?.label,age:state.age,time:state.time,note});}
+  saveRT();updateRTBadge();
+  const btn=document.getElementById('save-note-btn');
+  if(btn){btn.className='save-note-btn done';btn.textContent='✓ Sparat i röda tråden!';}
+  const box=document.getElementById('note-box');
+  if(box)box.classList.add('saved');
+  setTimeout(()=>{if(btn){btn.className='save-note-btn active';btn.textContent='🧵 Spara i röda tråden';}},2000);
+}
+
+function toggleSave(i){
+  state.saved[i]=!state.saved[i];
+  const act=state.activities[i];
+  const areaObj=AREAS.find(a=>a.id===state.area);
+  if(state.saved[i]){state.redThread.push({...act,area:areaObj?.label,age:state.age,time:state.time,note:state.notes[i]||''});}
+  else{state.redThread=state.redThread.filter(x=>x.title!==act.title);}
+  saveRT();updateRTBadge();
+  const btn=document.getElementById('save-btn');
+  if(btn){btn.className='save-btn '+(state.saved[i]?'saved':'');btn.textContent=state.saved[i]?'❤️':'🤍';}
+}
+
+function setFeedback(v){
+  state.feedback=v;
+  document.querySelectorAll('.fb-btn').forEach(b=>b.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+}
+
+function prevAct(){if(state.idx>0){state.idx--;renderCard();}}
+function nextAct(){if(state.idx<state.activities.length-1){state.idx++;renderCard();}}
+
+function openRT(){
+  document.getElementById('rt-overlay').style.display='flex';
+  renderRT();
+}
+function closeRT(){document.getElementById('rt-overlay').style.display='none';}
+function renderRT(){
+  const content=document.getElementById('rt-content');
+  const printBtn=document.getElementById('print-all-btn');
+  printBtn.style.display=state.redThread.length?'flex':'none';
+  if(!state.redThread.length){
+    content.innerHTML=`<div class="rt-empty"><div class="rt-emoji">🌱</div><p style="font-weight:800;font-size:15px">Spara aktiviteter med ❤️</p><p style="font-size:13px;margin-top:4px">Eller skriv reflektioner under aktiviteten!</p></div>`;
+    return;
+  }
+  content.innerHTML=state.redThread.map((item,i)=>`
+    <div class="rt-item">
+      <div class="rt-item-header">
+        <div style="flex:1;padding-right:10px">
+          <div class="rt-item-title">${item.title}</div>
+          <div class="rt-item-meta">${item.area||''} · ${item.age||''} · ${item.time||''}</div>
+        </div>
+        <button class="del-btn" onclick="removeRT(${i})">🗑</button>
+      </div>
+      ${item.note?`<div class="rt-note"><div class="rt-note-label">✏️ Min reflektion</div><div class="rt-note-text">${item.note}</div></div>`:''}
+    </div>`).join('');
+}
+function removeRT(i){state.redThread.splice(i,1);saveRT();updateRTBadge();renderRT();}
+
+function openLpfo(goal){
+  document.getElementById('modal-title').textContent=goal.replace('Lpfö 18: ','');
+  document.getElementById('modal-text').textContent=LPFO[goal]||'Mer information finns i Lpfö 18.';
+  document.getElementById('lpfo-modal').style.display='flex';
+}
+function closeModal(){document.getElementById('lpfo-modal').style.display='none';}
+
+function triggerPrint(html){
+  const old=document.getElementById('gnistan-print-frame');if(old)old.remove();
+  const iframe=document.createElement('iframe');
+  iframe.id='gnistan-print-frame';
+  iframe.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;border:none;z-index:9999;background:white;';
+  document.body.appendChild(iframe);
+  iframe.contentDocument.open();iframe.contentDocument.write(html);iframe.contentDocument.close();
+  setTimeout(()=>{iframe.contentWindow.focus();iframe.contentWindow.print();setTimeout(()=>iframe.remove(),2000);},600);
+}
+
+function printPlanning(){
+  const act=state.activities[state.idx];
+  const areaObj=AREAS.find(a=>a.id===state.area);
+  const note=state.notes[state.idx]||'';
+  triggerPrint(`<!DOCTYPE html><html lang="sv"><head><meta charset="UTF-8"><title>Planering – ${act.title}</title>
+  <style>@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}body{font-family:'Nunito',sans-serif;color:#1A1A2E;padding:32px;max-width:680px;margin:0 auto}
+  .logo{font-size:18px;font-weight:900;color:#FF6B2B;margin-bottom:6px}h1{font-size:24px;font-weight:900;margin-bottom:8px}
+  .meta{display:flex;gap:16px;font-size:13px;color:#9096B0;font-weight:700;margin-bottom:24px;padding-bottom:16px;border-bottom:3px solid #FF6B2B}
+  .sec{margin-bottom:22px}.sec-title{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#FF6B2B;margin-bottom:10px}
+  .step{display:flex;gap:12px;margin-bottom:10px}.num{min-width:26px;height:26px;background:#FF6B2B;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;flex-shrink:0}
+  .step-t{font-size:13.5px;line-height:1.7;padding-top:3px}.box{border-radius:8px;padding:12px 14px;margin-bottom:10px}
+  .bo{background:#FFF8F0;border-left:4px solid #FF6B2B}.bp{background:#F5F0FF;border-left:4px solid #9B5DE5}
+  .bn{background:#F5F0FF;border:2px dashed #9B5DE5;min-height:60px}.bl{font-size:11px;font-weight:800;margin-bottom:6px}
+  .lo{color:#FF6B2B}.lp{color:#9B5DE5}.bt{font-size:13px;line-height:1.7;font-style:italic;color:#555}
+  .tags{display:flex;flex-wrap:wrap;gap:8px}.tag{background:#EFF4FF;color:#4B72D9;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:800;border:1px solid #D0DFFF}
+  .footer{margin-top:28px;padding-top:14px;border-top:1px solid #EDE8E0;font-size:11px;color:#9096B0;text-align:center}</style></head><body>
+  <div class="logo">✦ Gnistan</div><h1>${act.title}</h1>
+  <div class="meta"><span>👶 ${state.age}</span><span>⏱ ${state.time}</span><span>📚 ${areaObj?.label||''}</span></div>
+  <div class="sec"><div class="sec-title">👩‍🏫 Genomförande</div>
+  ${act.pedagogSteps.map((s,i)=>`<div class="step"><div class="num">${i+1}</div><div class="step-t">${s}</div></div>`).join('')}</div>
+  <div class="sec"><div class="sec-title">💭 Reflektion</div>
+  <div class="box bo"><div class="bl lo">🌱 Innan aktiviteten</div><div class="bt">${act.reflectionBefore}</div></div>
+  <div class="box bp"><div class="bl lp">🌟 Efter aktiviteten</div><div class="bt">${act.reflectionAfter}</div></div></div>
+  <div class="sec"><div class="sec-title">✏️ Mina reflektioner</div>
+  <div class="box bn"><div class="bl lp">Antecknat</div><div class="bt">${note||'(skriv här efter aktiviteten...)'}</div></div></div>
+  <div class="sec"><div class="sec-title">📚 Koppling Lpfö 18</div>
+  <div class="tags">${act.lpfo.map(l=>`<span class="tag">${l}</span>`).join('')}</div></div>
+  <div class="footer">Gnistan — AI-driven inspirationsbank för pedagoger</div></body></html>`);
+}
+
+function printLetter(){
+  const act=state.activities[state.idx];
+  triggerPrint(`<!DOCTYPE html><html lang="sv"><head><meta charset="UTF-8"><title>Magiskt brev</title>
+  <style>@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}body{font-family:'Nunito',sans-serif;background:#FDF8F2;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:32px}
+  .card{background:#fff;border-radius:24px;padding:40px;max-width:520px;width:100%;box-shadow:0 4px 24px rgba(0,0,0,0.08);border:2px dashed #FFD166}
+  .stars{font-size:28px;text-align:center;margin-bottom:18px;letter-spacing:10px}h1{font-size:24px;font-weight:900;color:#FF6B2B;text-align:center;margin-bottom:22px}
+  .body{font-size:16px;line-height:1.85;color:#1A1A2E;margin-bottom:20px}
+  .mission{background:linear-gradient(135deg,#F0FDF9,#E8FFF8);border-radius:14px;padding:18px;margin-bottom:22px;border:1px solid #C3F0E4}
+  .ml{font-size:12px;font-weight:800;color:#06D6A0;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+  .mt{font-size:15px;line-height:1.75;color:#1A1A2E}.sign{text-align:right;font-size:16px;font-weight:800;color:#FF6B2B;margin-top:24px}</style></head><body>
+  <div class="card"><div class="stars">✦ ✦ ✦</div><h1>Ett hemligt brev</h1>
+  <div class="body">${act.magicIntro}</div>
+  <div class="mission"><div class="ml">✨ Er uppgift</div><div class="mt">${act.childDescription}</div></div>
+  <div class="body">Är ni redo? Magin börjar nu... ✨</div>
+  <div class="sign">— Med magiska hälsningar ✦</div></div></body></html>`);
+}
+
+function printAll(){
+  triggerPrint(`<!DOCTYPE html><html lang="sv"><head><meta charset="UTF-8"><title>Röd tråd – Gnistan</title>
+  <style>@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}body{font-family:'Nunito',sans-serif;color:#1A1A2E;padding:32px;max-width:680px;margin:0 auto}
+  h1{font-size:26px;font-weight:900;color:#FF6B2B;margin-bottom:4px}.sub{font-size:13px;color:#9096B0;margin-bottom:28px}
+  .item{margin-bottom:28px;padding-bottom:28px;border-bottom:2px solid #EDE8E0}.item:last-child{border-bottom:none}
+  .title{font-size:20px;font-weight:900;margin-bottom:4px}.meta{font-size:12px;color:#9096B0;font-weight:700;margin-bottom:12px}
+  .step{display:flex;gap:10px;margin-bottom:8px}.num{min-width:22px;height:22px;background:#FF6B2B;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;flex-shrink:0}
+  .st{font-size:13px;line-height:1.6;padding-top:2px}.note{background:#F5F0FF;border-left:4px solid #9B5DE5;padding:10px 12px;border-radius:0 8px 8px 0;margin-top:10px}
+  .nl{font-size:11px;font-weight:800;color:#9B5DE5;margin-bottom:4px}.nt{font-size:13px;line-height:1.6;font-style:italic;color:#444}
+  .footer{margin-top:24px;text-align:center;font-size:11px;color:#9096B0}</style></head><body>
+  <h1>✦ Röd tråd</h1><div class="sub">Sparade aktiviteter från Gnistan • ${new Date().toLocaleDateString('sv-SE')}</div>
+  ${state.redThread.map(item=>`<div class="item"><div class="title">${item.title}</div>
+  <div class="meta">${item.area||''} · ${item.age||''} · ${item.time||''}</div>
+  ${item.pedagogSteps?.map((s,i)=>`<div class="step"><div class="num">${i+1}</div><div class="st">${s}</div></div>`).join('')||''}
+  ${item.note?`<div class="note"><div class="nl">✏️ Min reflektion</div><div class="nt">${item.note}</div></div>`:''}</div>`).join('')}
+  <div class="footer">Gnistan — AI-driven inspirationsbank för pedagoger</div></body></html>`);
+}
+
+init();
+</script>
+</body>
+</html>
